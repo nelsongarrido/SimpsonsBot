@@ -9,6 +9,6 @@ namespace SimpsonsBot.Model
     public class UserProfile
     {
         public string Name { get; set; }
-        public string CompanyName { get; set; }
+        public string FavoriteCharacter { get; set; }
     }
 }

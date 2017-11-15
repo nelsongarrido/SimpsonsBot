@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using SimpsonsBot.Model;
 
 namespace SimpsonsBot.Dialogs
 {
@@ -15,15 +16,19 @@ namespace SimpsonsBot.Dialogs
             return Task.CompletedTask;
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+        private Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            var activity = await result as Activity;
+            context.Call<Model.UserProfile>(new Dialogs.EnsureCharacterDialog(), CharacterEnsured);
+            return Task.CompletedTask;
+        }
 
-            // calculate something for us to return
-            int length = (activity.Text ?? string.Empty).Length;
+        private async Task CharacterEnsured(IDialogContext context, IAwaitable<UserProfile> result)
+        {
+            var profile = await result;
 
-            // return our reply to the user
-            await context.PostAsync($"You sent '{activity.Text}' which was {length} characters");
+            context.UserData.SetValue(@"profile", profile);
+
+            await context.PostAsync($"bien {profile.FavoriteCharacter}");
 
             context.Wait(MessageReceivedAsync);
         }
