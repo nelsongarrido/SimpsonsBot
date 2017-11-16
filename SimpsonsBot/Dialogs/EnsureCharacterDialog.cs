@@ -25,7 +25,7 @@ namespace SimpsonsBot.Dialogs
 
             if (string.IsNullOrWhiteSpace(_profile.FavoriteCharacter))
                 PromptDialog.Text(context, CharacterEntered, "What is your favorite character?");
-
+            
             return Task.CompletedTask;
         }
 
