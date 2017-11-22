@@ -9,18 +9,21 @@ namespace SimpsonsBot.Dialogs
     [Serializable]
     public class RootDialog : IDialog<object>
     {
-        public Task StartAsync(IDialogContext context)
+        public async Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
-
-            return Task.CompletedTask;
         }
 
-        private Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            context.Call<Model.UserProfile>(new Dialogs.EnsureCharacterDialog(), CharacterEnsured);
-            return Task.CompletedTask;
+            await this.SendWelcomeMessageAsync(context);
         }
+
+        private async Task SendWelcomeMessageAsync(IDialogContext context)
+        {
+            context.Call(new Dialogs.EnsureCharacterDialog(), this.CharacterEnsured);
+        }
+
 
         private async Task CharacterEnsured(IDialogContext context, IAwaitable<UserProfile> result)
         {
@@ -32,5 +35,6 @@ namespace SimpsonsBot.Dialogs
 
             context.Wait(MessageReceivedAsync);
         }
+
     }
 }
