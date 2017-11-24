@@ -40,9 +40,11 @@ namespace SimpsonsBot.Dialogs
             }
         }
 
-        private Task OnOptionSelected(IDialogContext context, IAwaitable<object> result)
+        private async Task OnOptionSelected(IDialogContext context, IAwaitable<object> result)
         {
-            return Task.CompletedTask;
+            var msg = await result;
+            await context.PostAsync($"{msg} dsfdsdsfsfsd");
+            context.Done(msg);
         }
     }
 }
