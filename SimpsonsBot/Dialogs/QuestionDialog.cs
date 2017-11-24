@@ -11,6 +11,7 @@ namespace SimpsonsBot.Dialogs
     public class QuestionDialog : IDialog<object>
     {
         protected int count = 1;
+        Question.QuestionHelper questionHelper;
 
         public async Task StartAsync(IDialogContext context)
         {
@@ -20,13 +21,17 @@ namespace SimpsonsBot.Dialogs
 
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
+
+            questionHelper = new Question.QuestionHelper();
+            var question = questionHelper.GetRamdonQuestion();
+
             var message = await argument;
             if (message.Text == "si")
             {
                 PromptDialog.Choice(context,
                     this.OnOptionSelected,
-                    new List<string>() { "FlightsOption", "HotelsOption" },
-                    "Are you looking for a flight or a hotel?", "Not a valid option", 3);
+                    question.Answers,
+                    question.Text);
             }
             else
             {
@@ -35,7 +40,7 @@ namespace SimpsonsBot.Dialogs
             }
         }
 
-        private Task OnOptionSelected(IDialogContext context, IAwaitable<string> result)
+        private Task OnOptionSelected(IDialogContext context, IAwaitable<object> result)
         {
             return Task.CompletedTask;
         }

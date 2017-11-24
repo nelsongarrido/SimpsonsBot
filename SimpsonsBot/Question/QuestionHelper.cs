@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpsonsBot.Question
 {
+    [Serializable]
     public class QuestionHelper
     {
         List<Model.Question> questions;

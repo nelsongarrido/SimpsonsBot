@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpsonsBot.Model
 {
+    [Serializable]
     public class Question
     {
         [JsonProperty("answers")]

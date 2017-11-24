@@ -21,7 +21,8 @@ namespace SimpsonsBot.Dialogs
 
         private async Task SendWelcomeMessageAsync(IDialogContext context)
         {
-            context.Call(new Dialogs.EnsureCharacterDialog(), this.CharacterEnsured);
+            // context.Call(new Dialogs.EnsureCharacterDialog(), this.CharacterEnsured);
+            context.Call(new Dialogs.QuestionDialog(), this.CharacterEnsured);
         }
 
 
@@ -36,5 +37,10 @@ namespace SimpsonsBot.Dialogs
             context.Wait(MessageReceivedAsync);
         }
 
+
+        private async Task CharacterEnsured(IDialogContext context, IAwaitable<object> result)
+        {
+            var ffff = await result;
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpsonsBot.Model
 {
+    [Serializable]
     public class Answer
     {
         [JsonProperty("number")]
@@ -13,5 +14,10 @@ namespace SimpsonsBot.Model
 
         [JsonProperty("text")]
         public string Text { get; set; }
+
+        public override string ToString()
+        {
+            return this.Text;
+        }
     }
 }
