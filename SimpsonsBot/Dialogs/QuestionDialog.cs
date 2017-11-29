@@ -12,10 +12,11 @@ namespace SimpsonsBot.Dialogs
     {
         protected int count = 1;
         Question.QuestionHelper questionHelper;
+        Model.Question currentQuestion;
 
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Un ping pong?");
+            await context.PostAsync("Ping pong?");
             context.Wait(MessageReceivedAsync);
         }
 
@@ -23,28 +24,37 @@ namespace SimpsonsBot.Dialogs
         {
 
             questionHelper = new Question.QuestionHelper();
-            var question = questionHelper.GetRamdonQuestion();
+            currentQuestion = questionHelper.GetRamdonQuestion();
 
             var message = await argument;
             if (message.Text == "si")
             {
                 PromptDialog.Choice(context,
                     this.OnOptionSelected,
-                    question.Answers,
-                    question.Text);
+                    currentQuestion.Answers,
+                    currentQuestion.Text);
+            }
+            //else
+            //{
+            //    await context.PostAsync($"{this.count++}: You said {message.Text}");
+            //    context.Wait(MessageReceivedAsync);
+            //}
+        }
+
+        private async Task OnOptionSelected(IDialogContext context, IAwaitable<Model.Answer> result)
+        {
+            var msg = await result;
+
+            if (currentQuestion.CorrectAnswer == msg.Number)
+            {
+                await context.PostAsync($"{msg} correcto");
+                context.Done(msg);
             }
             else
             {
-                await context.PostAsync($"{this.count++}: You said {message.Text}");
-                context.Wait(MessageReceivedAsync);
+                await context.PostAsync($"{msg} incorrecto. A seguir viendo capitulos de los Simpsons");
+                context.Done(msg);
             }
-        }
-
-        private async Task OnOptionSelected(IDialogContext context, IAwaitable<object> result)
-        {
-            var msg = await result;
-            await context.PostAsync($"{msg} dsfdsdsfsfsd");
-            context.Done(msg);
         }
     }
 }
