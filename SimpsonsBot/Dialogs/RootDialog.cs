@@ -16,17 +16,22 @@ namespace SimpsonsBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            await this.SendWelcomeMessageAsync(context);
+            context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
         }
 
-        private async Task SendWelcomeMessageAsync(IDialogContext context)
+        private async Task AfterQuestionDialog(IDialogContext context, IAwaitable<object> result)
         {
-            // context.Call(new Dialogs.EnsureCharacterDialog(), this.CharacterEnsured);
-            context.Call(new Dialogs.QuestionDialog(), this.CharacterEnsured);
+            var ffff = await result;
+            var profile = new Model.UserProfile();
+
+            //Si no ingreso su personaje favorito le pregunta
+            if (context.UserData.TryGetValue(@"profile", out profile))
+                context.Wait(MessageReceivedAsync);
+            else
+                context.Call(new Dialogs.FavoriteCharacterDialog(), this.AfterFavoriteCharacterDialog);
         }
 
-
-        private async Task CharacterEnsured(IDialogContext context, IAwaitable<UserProfile> result)
+        private async Task AfterFavoriteCharacterDialog(IDialogContext context, IAwaitable<UserProfile> result)
         {
             var profile = await result;
 
@@ -37,10 +42,5 @@ namespace SimpsonsBot.Dialogs
             context.Wait(MessageReceivedAsync);
         }
 
-
-        private async Task CharacterEnsured(IDialogContext context, IAwaitable<object> result)
-        {
-            var ffff = await result;
-        }
     }
 }
