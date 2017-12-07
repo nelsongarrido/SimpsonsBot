@@ -34,11 +34,11 @@ namespace SimpsonsBot.Dialogs
                     currentQuestion.Answers,
                     currentQuestion.Text);
             }
-            //else
-            //{
-            //    await context.PostAsync($"{this.count++}: You said {message.Text}");
-            //    context.Wait(MessageReceivedAsync);
-            //}
+            else
+            {
+                await context.PostAsync($"Ok, como quieras!");
+                context.Done("");
+            }
         }
 
         private async Task OnOptionSelected(IDialogContext context, IAwaitable<Model.Answer> result)

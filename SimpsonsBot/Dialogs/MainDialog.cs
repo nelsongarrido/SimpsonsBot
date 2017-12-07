@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SimpsonsBot.Dialogs
 {
-    [LuisModel("73198ae7-86b7-4f44-beb6-73e64a2208c2", "d8a285498d484265a88a1f30686a2670")]
+    [LuisModel("500f7c62-5376-46c4-8a5c-d757859597f9", "d8a285498d484265a88a1f30686a2670")]
     [Serializable]
     public class MainDialog : LuisDialog<object>
     {
@@ -52,7 +52,14 @@ namespace SimpsonsBot.Dialogs
         [LuisIntent("Laugh")]
         public async Task Laugh(IDialogContext context, LuisResult result)
         {
-            //await context.PostAsync("Que risa!!");
+            await context.PostAsync("Que risa!!");
+            //context.Wait(MessageReceived);
+            //context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
+        }
+
+        [LuisIntent("Play")]
+        public async Task Play(IDialogContext context, LuisResult result)
+        {
             //context.Wait(MessageReceived);
             context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
         }
