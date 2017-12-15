@@ -14,7 +14,6 @@ namespace SimpsonsBot.Dialogs
     public class QuestionDialog : LuisBaseDialog<object>
     {
         protected int count = 1;
-        Question.QuestionHelper questionHelper;
         Model.Question currentQuestion;
 
         public QuestionDialog(IDialogContext context)
@@ -26,8 +25,7 @@ namespace SimpsonsBot.Dialogs
         [LuisIntent("GetPositiveAnswer")]
         public async Task PositiveAnswer(IDialogContext context, LuisResult result)
         {
-            questionHelper = new Question.QuestionHelper();
-            currentQuestion = questionHelper.GetRamdonQuestion();
+            currentQuestion = Question.QuestionHelper.GetRamdonQuestion();
 
             PromptDialog.Choice(context,
                   this.OnOptionSelected,

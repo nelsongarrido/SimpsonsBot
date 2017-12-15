@@ -8,21 +8,16 @@ using System.Threading.Tasks;
 namespace SimpsonsBot.Question
 {
     [Serializable]
-    public class QuestionHelper
+    public static class QuestionHelper
     {
-        List<Model.Question> questions;
-
-        public QuestionHelper()
+        public static Model.Question GetRamdonQuestion()
         {
+            List<Model.Question> questions;
             using (StreamReader r = new StreamReader(@"Question\simp.json"))
             {
                 string json = r.ReadToEnd();
                 questions = JsonConvert.DeserializeObject<List<Model.Question>>(json);
             }
-        }
-
-        public Model.Question GetRamdonQuestion()
-        {
             return questions.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
         }
     }

@@ -52,6 +52,9 @@ namespace SimpsonsBot.Dialogs
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
+            await context.PostAsync(Quotes.QuotesHelper.GetRamdonQuote().Text);
+
+
             if (_noneCount % 2 == 0)
                 await FavoriteCharacterDialog(context);
             else
