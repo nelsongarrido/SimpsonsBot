@@ -16,12 +16,11 @@ namespace SimpsonsBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
+            // context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
         }
 
         private async Task AfterQuestionDialog(IDialogContext context, IAwaitable<object> result)
         {
-            var ffff = await result;
             var profile = new Model.UserProfile();
 
             //Si no ingreso su personaje favorito le pregunta

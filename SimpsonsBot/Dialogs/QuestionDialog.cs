@@ -1,5 +1,7 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Connector;
+using SimpsonsBot.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,38 +10,51 @@ using System.Threading.Tasks;
 namespace SimpsonsBot.Dialogs
 {
     [Serializable]
-    public class QuestionDialog : IDialog<object>
+    public class QuestionDialog : LuisBaseDialog<object>
     {
         protected int count = 1;
         Question.QuestionHelper questionHelper;
         Model.Question currentQuestion;
 
-        public async Task StartAsync(IDialogContext context)
+        public QuestionDialog(IDialogContext context)
         {
-            await context.PostAsync("Ping pong?");
-            context.Wait(MessageReceivedAsync);
+            context.PostAsync("Ping pong?");
         }
 
-        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
-        {
 
+        [LuisIntent("GetPositiveAnswer")]
+        public async Task Laugh(IDialogContext context, Microsoft.Bot.Builder.Luis.Models.LuisResult result)
+        {
             questionHelper = new Question.QuestionHelper();
             currentQuestion = questionHelper.GetRamdonQuestion();
 
-            var message = await argument;
-            if (message.Text == "si")
-            {
-                PromptDialog.Choice(context,
-                    this.OnOptionSelected,
-                    currentQuestion.Answers,
-                    currentQuestion.Text);
-            }
-            else
-            {
-                await context.PostAsync($"Ok, como quieras!");
-                context.Done("");
-            }
+            PromptDialog.Choice(context,
+                  this.OnOptionSelected,
+                  currentQuestion.Answers,
+                  currentQuestion.Text);
         }
+
+
+        //public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        //{
+
+        //    questionHelper = new Question.QuestionHelper();
+        //    currentQuestion = questionHelper.GetRamdonQuestion();
+
+        //    var message = await argument;
+        //    if (message.Text == "si")
+        //    {
+        //        PromptDialog.Choice(context,
+        //            this.OnOptionSelected,
+        //            currentQuestion.Answers,
+        //            currentQuestion.Text);
+        //    }
+        //    else
+        //    {
+        //        await context.PostAsync($"Ok, como quieras!");
+        //        context.Done("");
+        //    }
+        //}
 
         private async Task OnOptionSelected(IDialogContext context, IAwaitable<Model.Answer> result)
         {

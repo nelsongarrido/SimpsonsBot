@@ -1,17 +1,19 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 using SimpsonsBot.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpsonsBot.Dialogs
 {
-    [LuisModel("500f7c62-5376-46c4-8a5c-d757859597f9", "d8a285498d484265a88a1f30686a2670")]
+    //[LuisModel("500f7c62-5376-46c4-8a5c-d757859597f9", "d8a285498d484265a88a1f30686a2670")]
     [Serializable]
-    public class MainDialog : LuisDialog<object>
+    public class MainDialog : LuisBaseDialog<object>
     {
         int _saludos = 1;
 
@@ -26,13 +28,12 @@ namespace SimpsonsBot.Dialogs
             else if (_saludos == 3)
             {
                 _saludos = 0;
-                // await context.PostAsync("Esta charla se esta tornando aburrida.");
-                // var ffff = await result;
+
                 var profile = new Model.UserProfile();
 
                 //Si no ingreso su personaje favorito le pregunta
                 if (context.UserData.TryGetValue(@"profile", out profile))
-                    await context.PostAsync("Esta charla se esta tornando aburrida.");
+                    await context.PostAsync($"Aguante {profile.FavoriteCharacter}.");
                 else
                     context.Call(new Dialogs.FavoriteCharacterDialog(), this.AfterFavoriteCharacterDialog);
             }
@@ -42,26 +43,16 @@ namespace SimpsonsBot.Dialogs
             _saludos++;
         }
 
-        [LuisIntent("Ask")]
-        public async Task Ask(IDialogContext context, LuisResult result)
-        {
-            // QnaMakerRespose(context);
-            // await context.PostAsync("Usted me esta preguntando");
-        }
-
         [LuisIntent("Laugh")]
         public async Task Laugh(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Que risa!!");
-            //context.Wait(MessageReceived);
-            //context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
         }
 
-        [LuisIntent("Play")]
-        public async Task Play(IDialogContext context, LuisResult result)
+        [LuisIntent("GetGame")]
+        public async Task GetGame(IDialogContext context, LuisResult result)
         {
-            //context.Wait(MessageReceived);
-            context.Call(new Dialogs.QuestionDialog(), this.AfterQuestionDialog);
+            context.Call(new Dialogs.QuestionDialog(context), this.AfterQuestionDialog);
         }
 
         [LuisIntent("")]
@@ -71,7 +62,7 @@ namespace SimpsonsBot.Dialogs
             context.Wait(MessageReceived);
         }
 
-
+        #region Private Methods
         private async Task AfterQuestionDialog(IDialogContext context, IAwaitable<object> result)
         {
             var ffff = await result;
@@ -87,12 +78,34 @@ namespace SimpsonsBot.Dialogs
         private async Task AfterFavoriteCharacterDialog(IDialogContext context, IAwaitable<UserProfile> result)
         {
             var profile = await result;
-
             context.UserData.SetValue(@"profile", profile);
+            //await context.PostAsync($"bien {profile.FavoriteCharacter}");
 
+            var reply = context.MakeMessage();
+
+            reply.AttachmentLayout = Microsoft.Bot.Connector.AttachmentLayoutTypes.Carousel;
+            reply.Attachments.Add(GetProfileThumbnailCard());
+
+            await context.PostAsync(reply);
             await context.PostAsync($"bien {profile.FavoriteCharacter}");
-
-            //context.Wait(MessageReceivedAsync);
         }
+
+        private Microsoft.Bot.Connector.Attachment GetProfileThumbnailCard()
+        {
+            var thumbnailCard = new Microsoft.Bot.Connector.ThumbnailCard
+            {
+                // title of the card  
+                Title = "Homer",
+                //subtitle of the card  
+                Subtitle = "Homero",
+                //Detail Text  
+                Text = "Homero Simpson",
+                // smallThumbnailCard  Image  
+                Images = new List<Microsoft.Bot.Connector.CardImage> { new Microsoft.Bot.Connector.CardImage("https://blogdefrases.com/wp-content/uploads/2016/02/La-mejor-frases-de-Homero-Simpson.jpg") },
+                 };
+
+            return thumbnailCard.ToAttachment();
+        }
+        #endregion
     }
 }
