@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using SimpsonsBot.Model;
 using System;
@@ -23,7 +24,7 @@ namespace SimpsonsBot.Dialogs
 
 
         [LuisIntent("GetPositiveAnswer")]
-        public async Task Laugh(IDialogContext context, Microsoft.Bot.Builder.Luis.Models.LuisResult result)
+        public async Task PositiveAnswer(IDialogContext context, LuisResult result)
         {
             questionHelper = new Question.QuestionHelper();
             currentQuestion = questionHelper.GetRamdonQuestion();
@@ -34,27 +35,13 @@ namespace SimpsonsBot.Dialogs
                   currentQuestion.Text);
         }
 
+        [LuisIntent("")]
+        public async Task None(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Ok.");
+            context.Done(true);
+        }
 
-        //public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
-        //{
-
-        //    questionHelper = new Question.QuestionHelper();
-        //    currentQuestion = questionHelper.GetRamdonQuestion();
-
-        //    var message = await argument;
-        //    if (message.Text == "si")
-        //    {
-        //        PromptDialog.Choice(context,
-        //            this.OnOptionSelected,
-        //            currentQuestion.Answers,
-        //            currentQuestion.Text);
-        //    }
-        //    else
-        //    {
-        //        await context.PostAsync($"Ok, como quieras!");
-        //        context.Done("");
-        //    }
-        //}
 
         private async Task OnOptionSelected(IDialogContext context, IAwaitable<Model.Answer> result)
         {

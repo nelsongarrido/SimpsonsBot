@@ -16,7 +16,7 @@ namespace SimpsonsBot.Dialogs
     public class MainDialog : LuisBaseDialog<object>
     {
         int _saludos = 1;
-
+        int _noneCount = 0;
         public MainDialog() { }
         public MainDialog(ILuisService service) : base(service) { }
 
@@ -29,13 +29,7 @@ namespace SimpsonsBot.Dialogs
             {
                 _saludos = 0;
 
-                var profile = new Model.UserProfile();
-
-                //Si no ingreso su personaje favorito le pregunta
-                if (context.UserData.TryGetValue(@"profile", out profile))
-                    await context.PostAsync($"Aguante {profile.FavoriteCharacter}.");
-                else
-                    context.Call(new Dialogs.FavoriteCharacterDialog(), this.AfterFavoriteCharacterDialog);
+                await FavoriteCharacterDialog(context);
             }
             else
                 await context.PostAsync("Hola");
@@ -58,11 +52,30 @@ namespace SimpsonsBot.Dialogs
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("No se che.");
-            context.Wait(MessageReceived);
+            if (_noneCount % 2 == 0)
+                await FavoriteCharacterDialog(context);
+            else
+            {
+                await context.PostAsync("No se che.");
+                context.Wait(MessageReceived);
+            }
+
+            _noneCount++;
         }
 
         #region Private Methods
+        private async Task FavoriteCharacterDialog(IDialogContext context)
+        {
+            var profile = new Model.UserProfile();
+
+            //Si no ingreso su personaje favorito le pregunta
+            if (context.UserData.TryGetValue(@"profile", out profile))
+                await context.PostAsync($"Aguante {profile.FavoriteCharacter}.");
+            else
+                context.Call(new Dialogs.FavoriteCharacterDialog(), this.AfterFavoriteCharacterDialog);
+        }
+
+
         private async Task AfterQuestionDialog(IDialogContext context, IAwaitable<object> result)
         {
             var ffff = await result;
@@ -102,7 +115,7 @@ namespace SimpsonsBot.Dialogs
                 Text = "Homero Simpson",
                 // smallThumbnailCard  Image  
                 Images = new List<Microsoft.Bot.Connector.CardImage> { new Microsoft.Bot.Connector.CardImage("https://blogdefrases.com/wp-content/uploads/2016/02/La-mejor-frases-de-Homero-Simpson.jpg") },
-                 };
+            };
 
             return thumbnailCard.ToAttachment();
         }
