@@ -16,3 +16,4 @@ namespace SimpsonsBot.Model
         public bool? enabled { get; set; }
     }
 }
+   
