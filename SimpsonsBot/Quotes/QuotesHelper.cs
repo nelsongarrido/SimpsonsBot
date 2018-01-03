@@ -13,7 +13,7 @@ namespace SimpsonsBot.Quotes
         public static Model.Quote GetRamdonQuote()
         {
             List<Model.Quote> quotes;
-            using (StreamReader r = new StreamReader(@"Quotes\quote.json"))
+            using (StreamReader r = new StreamReader(@"Data\quote.json"))
             {
                 string json = r.ReadToEnd();
                 quotes = JsonConvert.DeserializeObject<List<Model.Quote>>(json);

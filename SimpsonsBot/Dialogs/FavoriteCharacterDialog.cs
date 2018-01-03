@@ -20,9 +20,50 @@ namespace SimpsonsBot.Dialogs
 
         private async Task AskForCharacter(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
+            //await context.PostAsync($"bien {profile.FavoriteCharacter}");
+
             var msg = await result;
             _profile.FavoriteCharacter = msg.Text;
-            context.Done(_profile);
+            var reply = context.MakeMessage();
+            var thumbnailCard = GetProfileThumbnailCard(msg.Text);
+
+            if (thumbnailCard != null)
+            {
+                reply.AttachmentLayout = Microsoft.Bot.Connector.AttachmentLayoutTypes.Carousel;
+                reply.Attachments.Add(thumbnailCard);
+
+                await context.PostAsync(reply);
+
+                context.Done(_profile);
+            }
+            else
+            {
+                await context.PostAsync("No tengo ese personaje.");
+            }
+        }
+
+        private Microsoft.Bot.Connector.Attachment GetProfileThumbnailCard(string character)
+        {
+            var characterCurrent = Question.CharactersHelper.GetCharacter(character);
+
+            if (characterCurrent != null)
+            {
+                var thumbnailCard = new Microsoft.Bot.Connector.ThumbnailCard
+                {
+                    // title of the card  
+                    Title = characterCurrent.name,
+                    //subtitle of the card  
+                    Subtitle = characterCurrent.name,
+                    //Detail Text  
+                    Text = characterCurrent.name,
+                    // smallThumbnailCard  Image  
+                    Images = new List<Microsoft.Bot.Connector.CardImage> { new Microsoft.Bot.Connector.CardImage(characterCurrent.icon) },
+                };
+
+                return thumbnailCard.ToAttachment();
+            }
+            else
+                return null;
         }
     }
 }

@@ -52,14 +52,11 @@ namespace SimpsonsBot.Dialogs
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync(Quotes.QuotesHelper.GetRamdonQuote().Text);
-
-
             if (_noneCount % 2 == 0)
                 await FavoriteCharacterDialog(context);
             else
             {
-                await context.PostAsync("No se che.");
+                await context.PostAsync(Quotes.QuotesHelper.GetRamdonQuote().Text);
                 context.Wait(MessageReceived);
             }
 
@@ -78,7 +75,6 @@ namespace SimpsonsBot.Dialogs
                 context.Call(new Dialogs.FavoriteCharacterDialog(), this.AfterFavoriteCharacterDialog);
         }
 
-
         private async Task AfterQuestionDialog(IDialogContext context, IAwaitable<object> result)
         {
             var ffff = await result;
@@ -95,33 +91,33 @@ namespace SimpsonsBot.Dialogs
         {
             var profile = await result;
             context.UserData.SetValue(@"profile", profile);
-            //await context.PostAsync($"bien {profile.FavoriteCharacter}");
+            ////await context.PostAsync($"bien {profile.FavoriteCharacter}");
 
-            var reply = context.MakeMessage();
+            //var reply = context.MakeMessage();
 
-            reply.AttachmentLayout = Microsoft.Bot.Connector.AttachmentLayoutTypes.Carousel;
-            reply.Attachments.Add(GetProfileThumbnailCard());
+            //reply.AttachmentLayout = Microsoft.Bot.Connector.AttachmentLayoutTypes.Carousel;
+            //reply.Attachments.Add(GetProfileThumbnailCard());
 
-            await context.PostAsync(reply);
+            //await context.PostAsync(reply);
             await context.PostAsync($"bien {profile.FavoriteCharacter}");
         }
 
-        private Microsoft.Bot.Connector.Attachment GetProfileThumbnailCard()
-        {
-            var thumbnailCard = new Microsoft.Bot.Connector.ThumbnailCard
-            {
-                // title of the card  
-                Title = "Homer",
-                //subtitle of the card  
-                Subtitle = "Homero",
-                //Detail Text  
-                Text = "Homero Simpson",
-                // smallThumbnailCard  Image  
-                Images = new List<Microsoft.Bot.Connector.CardImage> { new Microsoft.Bot.Connector.CardImage("https://blogdefrases.com/wp-content/uploads/2016/02/La-mejor-frases-de-Homero-Simpson.jpg") },
-            };
+        //private Microsoft.Bot.Connector.Attachment GetProfileThumbnailCard()
+        //{
+        //    var thumbnailCard = new Microsoft.Bot.Connector.ThumbnailCard
+        //    {
+        //        // title of the card  
+        //        Title = "Homer",
+        //        //subtitle of the card  
+        //        Subtitle = "Homero",
+        //        //Detail Text  
+        //        Text = "Homero Simpson",
+        //        // smallThumbnailCard  Image  
+        //        Images = new List<Microsoft.Bot.Connector.CardImage> { new Microsoft.Bot.Connector.CardImage("https://blogdefrases.com/wp-content/uploads/2016/02/La-mejor-frases-de-Homero-Simpson.jpg") },
+        //    };
 
-            return thumbnailCard.ToAttachment();
-        }
+        //    return thumbnailCard.ToAttachment();
+        //}
         #endregion
     }
 }
