@@ -17,6 +17,8 @@ namespace SimpsonsBot.Dialogs
     {
         int _saludos = 1;
         int _noneCount = 0;
+        Model.UserProfile profile = new Model.UserProfile();
+
         public MainDialog() { }
         public MainDialog(ILuisService service) : base(service) { }
 
@@ -56,7 +58,8 @@ namespace SimpsonsBot.Dialogs
                 await FavoriteCharacterDialog(context);
             else
             {
-                await context.PostAsync(Quotes.QuotesHelper.GetRamdonQuote().Text);
+                context.UserData.TryGetValue(@"profile", out profile);
+                await context.PostAsync(Quotes.QuotesHelper.GetRamdonQuote(profile?.FavoriteCharacter).Text);
                 context.Wait(MessageReceived);
             }
 
@@ -66,8 +69,6 @@ namespace SimpsonsBot.Dialogs
         #region Private Methods
         private async Task FavoriteCharacterDialog(IDialogContext context)
         {
-            var profile = new Model.UserProfile();
-
             //Si no ingreso su personaje favorito le pregunta
             if (context.UserData.TryGetValue(@"profile", out profile))
                 await context.PostAsync($"Aguante {profile.FavoriteCharacter}.");

@@ -10,7 +10,7 @@ namespace SimpsonsBot.Quotes
     [Serializable]
     public static class QuotesHelper
     {
-        public static Model.Quote GetRamdonQuote()
+        public static Model.Quote GetRamdonQuote(string favoriteCharacter)
         {
             List<Model.Quote> quotes;
             using (StreamReader r = new StreamReader(@"Data\quote.json"))
@@ -18,7 +18,7 @@ namespace SimpsonsBot.Quotes
                 string json = r.ReadToEnd();
                 quotes = JsonConvert.DeserializeObject<List<Model.Quote>>(json);
             }
-            return  quotes.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+            return quotes.OrderBy(x => Guid.NewGuid()).FirstOrDefault(f=> f.Author == favoriteCharacter || favoriteCharacter == null);
         }
     }
 }

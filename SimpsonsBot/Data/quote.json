@@ -1,4 +1,18 @@
 ﻿[
-  { "text": "No estaba dormido...estaba EBRIO!!!" },
-  { "text": "Los Santos fueron una basofia anoche, todo es basofia. He visto muchas basofias, pero estos son la mayor basofias entre las basofias." }
+  {
+    "author": "Homero",
+    "text": "No estaba dormido...estaba EBRIO!!!"
+  },
+  {
+    "author": "Homero",
+    "text": "Los Santos fueron una basofia anoche, todo es basofia. He visto muchas basofias, pero estos son la mayor basofias entre las basofias."
+  },
+  {
+    "author": "Bart",
+    "text": "Cowabunga"
+  },
+  {
+    "author": "Bart",
+    "text": "¡Yo no fui!"
+  }
 ]
