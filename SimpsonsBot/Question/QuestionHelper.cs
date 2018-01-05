@@ -13,7 +13,7 @@ namespace SimpsonsBot.Question
         public static Model.Question GetRamdonQuestion()
         {
             List<Model.Question> questions;
-            using (StreamReader r = new StreamReader(@"Question\simp.json"))
+            using (StreamReader r = new StreamReader(@"Data\simp.json"))
             {
                 string json = r.ReadToEnd();
                 questions = JsonConvert.DeserializeObject<List<Model.Question>>(json);

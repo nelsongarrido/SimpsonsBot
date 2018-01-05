@@ -59,7 +59,13 @@ namespace SimpsonsBot.Dialogs
             else
             {
                 context.UserData.TryGetValue(@"profile", out profile);
-                await context.PostAsync(Quotes.QuotesHelper.GetRamdonQuote(profile?.FavoriteCharacter).Text);
+                var frase = Quotes.QuotesHelper.GetRamdonQuote(profile?.FavoriteCharacter);
+
+                if (frase != null)
+                    await context.PostAsync(frase.Text);
+                else
+                    await context.PostAsync("jaja");
+
                 context.Wait(MessageReceived);
             }
 
