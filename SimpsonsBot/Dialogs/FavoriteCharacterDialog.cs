@@ -14,7 +14,7 @@ namespace SimpsonsBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("What is your favorite character?");
+            await context.PostAsync("Cual es tu personaje favorito de los Simpson?");
             context.Wait(AskForCharacter);
         }
 
