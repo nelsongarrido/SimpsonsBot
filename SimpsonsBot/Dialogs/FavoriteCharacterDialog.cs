@@ -38,7 +38,9 @@ namespace SimpsonsBot.Dialogs
             }
             else
             {
+                _profile = new Model.UserProfile();
                 await context.PostAsync("No tengo ese personaje.");
+                context.Done(_profile);
             }
         }
 

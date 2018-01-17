@@ -75,8 +75,10 @@ namespace SimpsonsBot.Dialogs
         #region Private Methods
         private async Task FavoriteCharacterDialog(IDialogContext context)
         {
+            context.UserData.TryGetValue(@"profile", out profile);
+
             //Si no ingreso su personaje favorito le pregunta
-            if (context.UserData.TryGetValue(@"profile", out profile))
+            if (profile != null && profile.FavoriteCharacter != null)
                 await context.PostAsync($"Aguante {profile.FavoriteCharacter}.");
             else
                 context.Call(new Dialogs.FavoriteCharacterDialog(), this.AfterFavoriteCharacterDialog);
@@ -106,7 +108,8 @@ namespace SimpsonsBot.Dialogs
             //reply.Attachments.Add(GetProfileThumbnailCard());
 
             //await context.PostAsync(reply);
-            await context.PostAsync($"bien {profile.FavoriteCharacter}");
+            if (profile.FavoriteCharacter != null)
+                await context.PostAsync($"bien {profile.FavoriteCharacter}");
         }
 
         //private Microsoft.Bot.Connector.Attachment GetProfileThumbnailCard()
